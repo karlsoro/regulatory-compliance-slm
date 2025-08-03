@@ -1,0 +1,17 @@
+# SOX Configuration
+framework: sox
+description: "Sarbanes-Oxley Act compliance"
+keywords: ['internal control', 'financial reporting', 'audit', 'section 404', 'section 302']
+special_tokens: ['[SOX]', '[CONTROL]', '[AUDIT]', '[REPORT]']
+
+training:
+  model_name: "distilbert-base-uncased"
+  max_length: 512
+  batch_size: 8
+  learning_rate: 2e-5
+  num_epochs: 3
+  warmup_steps: 500
+
+evaluation:
+  metrics: ["accuracy", "precision", "recall", "f1"]
+  confidence_threshold: 0.7

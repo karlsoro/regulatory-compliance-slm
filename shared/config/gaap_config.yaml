@@ -1,0 +1,17 @@
+# GAAP Configuration
+framework: gaap
+description: "Generally Accepted Accounting Principles"
+keywords: ['accounting', 'financial statement', 'revenue recognition', 'asset', 'liability']
+special_tokens: ['[GAAP]', '[ACCOUNTING]', '[FINANCIAL]', '[REVENUE]']
+
+training:
+  model_name: "distilbert-base-uncased"
+  max_length: 512
+  batch_size: 8
+  learning_rate: 2e-5
+  num_epochs: 3
+  warmup_steps: 500
+
+evaluation:
+  metrics: ["accuracy", "precision", "recall", "f1"]
+  confidence_threshold: 0.7

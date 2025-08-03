@@ -1,0 +1,17 @@
+# FDA Configuration
+framework: fda
+description: "FDA regulations for drug approval"
+keywords: ['clinical trial', 'drug approval', '21 cfr', 'electronic record', 'validation']
+special_tokens: ['[FDA]', '[CLINICAL]', '[TRIAL]', '[APPROVAL]']
+
+training:
+  model_name: "distilbert-base-uncased"
+  max_length: 512
+  batch_size: 8
+  learning_rate: 2e-5
+  num_epochs: 3
+  warmup_steps: 500
+
+evaluation:
+  metrics: ["accuracy", "precision", "recall", "f1"]
+  confidence_threshold: 0.7
