@@ -125,14 +125,21 @@ def test_broker_imports():
     
     try:
         # Mock the external dependencies
+        mock_sklearn = Mock()
+        mock_sklearn.feature_extraction = Mock()
+        mock_sklearn.feature_extraction.text = Mock()
+        mock_sklearn.metrics = Mock()
+        mock_sklearn.metrics.pairwise = Mock()
+        
         with patch.dict('sys.modules', {
             'torch': Mock(),
             'transformers': Mock(),
             'numpy': Mock(),
-            'sklearn': Mock(),
-            'sklearn.feature_extraction': Mock(),
-            'sklearn.metrics': Mock(),
-            'sklearn.metrics.pairwise': Mock()
+            'sklearn': mock_sklearn,
+            'sklearn.feature_extraction': mock_sklearn.feature_extraction,
+            'sklearn.feature_extraction.text': mock_sklearn.feature_extraction.text,
+            'sklearn.metrics': mock_sklearn.metrics,
+            'sklearn.metrics.pairwise': mock_sklearn.metrics.pairwise
         }):
             from broker.src.broker import (
                 ComplianceBroker, ModelInfo, TaskRequest, 
@@ -143,10 +150,12 @@ def test_broker_imports():
             model_info = ModelInfo(
                 framework="sox",
                 model_path="/test/path",
+                tokenizer_path="/test/tokenizer/path",
+                description="Test SOX model",
+                keywords=["sox", "financial", "reporting"],
                 is_loaded=False,
                 model=None,
-                tokenizer=None,
-                last_used=0.0
+                tokenizer=None
             )
             assert model_info.framework == "sox"
             assert not model_info.is_loaded
@@ -271,20 +280,31 @@ def test_broker_logic():
     print("Testing Broker logic...")
     
     try:
+        mock_sklearn = Mock()
+        mock_sklearn.feature_extraction = Mock()
+        mock_sklearn.feature_extraction.text = Mock()
+        mock_sklearn.metrics = Mock()
+        mock_sklearn.metrics.pairwise = Mock()
+        
         with patch.dict('sys.modules', {
             'torch': Mock(),
             'transformers': Mock(),
             'numpy': Mock(),
-            'sklearn': Mock()
+            'sklearn': mock_sklearn,
+            'sklearn.feature_extraction': mock_sklearn.feature_extraction,
+            'sklearn.feature_extraction.text': mock_sklearn.feature_extraction.text,
+            'sklearn.metrics': mock_sklearn.metrics,
+            'sklearn.metrics.pairwise': mock_sklearn.metrics.pairwise
         }):
             from broker.src.broker import ComplianceBroker, TaskRequest
             
             broker = ComplianceBroker(models_dir="test_models")
             
-            # Test model registration
-            success = broker.register_model("sox", "/test/model/path")
-            assert success is True
-            assert "sox" in broker.models
+            # Test model registration (mock the path check)
+            with patch('pathlib.Path.exists', return_value=True):
+                success = broker.register_model("sox", "/test/model/path")
+                assert success is True
+                assert "sox" in broker.models
             
             # Test framework detection
             prompt = "Generate SOX and GAAP compliance documentation"
@@ -308,11 +328,21 @@ async def test_broker_async():
     print("Testing Broker async functionality...")
     
     try:
+        mock_sklearn = Mock()
+        mock_sklearn.feature_extraction = Mock()
+        mock_sklearn.feature_extraction.text = Mock()
+        mock_sklearn.metrics = Mock()
+        mock_sklearn.metrics.pairwise = Mock()
+        
         with patch.dict('sys.modules', {
             'torch': Mock(),
             'transformers': Mock(),
             'numpy': Mock(),
-            'sklearn': Mock()
+            'sklearn': mock_sklearn,
+            'sklearn.feature_extraction': mock_sklearn.feature_extraction,
+            'sklearn.feature_extraction.text': mock_sklearn.feature_extraction.text,
+            'sklearn.metrics': mock_sklearn.metrics,
+            'sklearn.metrics.pairwise': mock_sklearn.metrics.pairwise
         }):
             from broker.src.broker import ComplianceBroker, TaskRequest
             
