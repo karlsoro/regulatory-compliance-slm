@@ -1,0 +1,75 @@
+# Training Configuration for Regulatory Compliance SLMs
+
+# Base model configuration
+model_name: "distilbert-base-uncased"
+max_length: 512
+batch_size: 8
+learning_rate: 2e-5
+num_epochs: 3
+warmup_steps: 500
+weight_decay: 0.01
+gradient_accumulation_steps: 4
+
+# Training settings
+save_steps: 1000
+eval_steps: 500
+logging_steps: 100
+save_total_limit: 3
+load_best_model_at_end: true
+metric_for_best_model: "eval_loss"
+greater_is_better: false
+
+# Output configuration
+output_dir: "models/checkpoints"
+
+# Framework-specific configurations
+frameworks:
+  sox:
+    description: "Sarbanes-Oxley Act compliance"
+    special_tokens: ["[SOX]", "[CONTROL]", "[AUDIT]", "[REPORT]"]
+    keywords: ["internal control", "financial reporting", "audit", "section 404"]
+    
+  gaap:
+    description: "Generally Accepted Accounting Principles"
+    special_tokens: ["[GAAP]", "[ACCOUNTING]", "[FINANCIAL]", "[STATEMENT]"]
+    keywords: ["accounting", "financial statement", "revenue recognition"]
+    
+  fda:
+    description: "FDA regulations for drug approval"
+    special_tokens: ["[FDA]", "[CLINICAL]", "[TRIAL]", "[APPROVAL]"]
+    keywords: ["clinical trial", "drug approval", "21 cfr", "electronic record"]
+    
+  hipaa:
+    description: "HIPAA compliance for healthcare"
+    special_tokens: ["[HIPAA]", "[PRIVACY]", "[SECURITY]", "[PATIENT]"]
+    keywords: ["privacy", "security", "patient", "phi", "breach"]
+    
+  gdpr:
+    description: "GDPR compliance for data protection"
+    special_tokens: ["[GDPR]", "[DATA]", "[PROTECTION]", "[CONSENT]"]
+    keywords: ["data protection", "consent", "privacy", "data subject"]
+
+# Data processing settings
+data_processing:
+  min_text_length: 50
+  max_text_length: 2048
+  train_split: 0.7
+  val_split: 0.15
+  test_split: 0.15
+  
+# Model evaluation settings
+evaluation:
+  metrics: ["accuracy", "precision", "recall", "f1"]
+  confidence_threshold: 0.7
+  
+# Logging and monitoring
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "training.log"
+  
+# Hardware settings
+hardware:
+  device: "auto"  # "cpu", "cuda", or "auto"
+  num_workers: 4
+  pin_memory: true 
